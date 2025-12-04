@@ -22,7 +22,6 @@ public class ShaderProgram {
 	
 	public void start() {
 		glUseProgram(programid);
-		
 	}
 	
 	public void stop() {

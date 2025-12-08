@@ -5,8 +5,9 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
-import engine.Rect;
 import engine.ShaderProgram;
+import engine.rendering_primitives.Rect;
+import engine.rendering_primitives.Sprite;
 
 import java.nio.*;
 
@@ -58,24 +59,26 @@ public class Main {
 	
 	private static void update() {
 		
-		Rect r = new Rect(0.0f, 0.0f, 0.0f, 0.0f);
-		ShaderProgram s = new ShaderProgram("src/shaders/vertexShader.glsl", "src/shaders/fragmentShader.glsl");
-		s.start();
+		Rect r = new Rect(0.0f, 0.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+		Rect r2 = new Rect(-0.5f, -0.65f, 0.125f, 0.45f, 0.0f, 1.0f, 0.0f);
+		Sprite s = new Sprite("src/assets/images/test.png", 0.5f, 0.5f, 0.25f, 0.6f, 1.0f, 1.0f, 0.0f);
+		Sprite s2 = new Sprite("src/assets/images/test.png", -0.5f, 0.5f, 0.85f, 0.25f, 1.0f, 1.0f, 1.0f);
 		
 		while(!glfwWindowShouldClose(window)) {
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			r.render();
-			glfwSwapBuffers(window);
 			glfwPollEvents();
+			glClear(GL_COLOR_BUFFER_BIT);
+			r.render();
+			r2.render();
+			s.render();
+			s2.render();
+			glfwSwapBuffers(window);
 		}
-		
-		r.destroy();
-		s.cleanup();
 		
 	}
 	
 	private static void cleanup() {
-		
+		Rect.cleanUp();
+		Sprite.cleanUp();
 		glfwDestroyWindow(window);
 		glfwSetErrorCallback(null).free();
 		

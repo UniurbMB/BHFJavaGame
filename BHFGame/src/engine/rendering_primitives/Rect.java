@@ -11,7 +11,7 @@ import engine.ShaderProgram;
 
 import static org.lwjgl.opengl.GL33.*;
 
-public class Rect{
+public class Rect implements Renderable{
 	
 	public Vector2f pos, size;
 	public Vector3f color;

@@ -8,9 +8,11 @@ import org.lwjgl.system.*;
 import engine.ShaderProgram;
 import engine.rendering_primitives.Canvas;
 import engine.rendering_primitives.Rect;
+import engine.rendering_primitives.ShaderRect;
 import engine.rendering_primitives.Sprite;
 import engine.events.KeyListener;
 import engine.events.MouseListener;
+import engine.events.WindowResizeListener;
 
 import java.nio.*;
 
@@ -54,18 +56,22 @@ public class Main {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 		
 		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
+		
 		glfwMakeContextCurrent(window);
 		glfwShowWindow(window);
 		
+		
 		GL.createCapabilities(true);
 		
+		WindowResizeListener.init(WINDOW_WIDTH, WINDOW_HEIGHT);
 		glfwSetCursorPosCallback(window, MouseListener::mousePosCallback);
 		glfwSetMouseButtonCallback(window, MouseListener::mouseButtonCallback);
 		glfwSetScrollCallback(window, MouseListener::mouseScrollCallback);
 		glfwSetKeyCallback(window, KeyListener::keyCallback);
+		glfwSetFramebufferSizeCallback(window, WindowResizeListener::windowResizeCallback);
 		
 		delta = 0.0f;
 		lastTime = (float)glfwGetTime();
@@ -81,14 +87,17 @@ public class Main {
 		Sprite s2 = new Sprite("src/assets/images/test.png", -0.5f, 0.5f, 1.0f, 0.25f, 1.0f, 1.0f, 1.0f);
 		Canvas c = new Canvas(-0.46875f, 0.0f, 0.53125f, 1.0f, 544, 1024, 0.25f, 0.25f, 0.25f);
 		Canvas c2 = new Canvas(0.0f, 0.0f, 1.0f, 1.0f, 600, 600);
+		ShaderRect shad = new ShaderRect(0.0f, 0.0f, 1.0f, 1.0f, "src/shaders/vertexShader.glsl", "src/shaders/specialFragmentShader.glsl");
 		
 		while(!glfwWindowShouldClose(window)) {
 			
 			lastTime = (float)glfwGetTime();
 			
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			
 			glfwPollEvents();
 			
-			c.beginDrawing(WINDOW_WIDTH, WINDOW_HEIGHT);
+			c.beginDrawing(WindowResizeListener.getWidth(), WindowResizeListener.getHeight());
 			glClear(GL_COLOR_BUFFER_BIT);
 			
 			r.render();
@@ -97,13 +106,26 @@ public class Main {
 			s2.render();
 			
 			c.stopDrawing();
-			c2.beginDrawing(WINDOW_WIDTH, WINDOW_HEIGHT);
+			
+			if(WindowResizeListener.getWidth() > WindowResizeListener.getHeight()) {
+				float ratio = ((float)WindowResizeListener.getHeight())/((float)WindowResizeListener.getWidth());
+				c2.size.x = ratio;
+				c2.size.y = 1.0f;
+			}else {
+				float ratio = ((float)WindowResizeListener.getWidth())/((float)WindowResizeListener.getHeight());
+				c2.size.y = ratio;
+				c2.size.x = 1.0f;
+			}
+			
+			c2.beginDrawing(WindowResizeListener.getWidth(), WindowResizeListener.getHeight());
 			c.render();
 			r3.render();
 			c2.stopDrawing();
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
+			shad.render();
 			c2.render();
+			
 			
 			if(KeyListener.isKeyPressed(GLFW_KEY_RIGHT)) {
 				s2.pos.x += 2.5f * delta;

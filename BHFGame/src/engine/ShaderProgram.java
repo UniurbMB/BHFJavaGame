@@ -96,6 +96,9 @@ public class ShaderProgram {
 		int result;
 		if(this.attributes.get(attribName) == null) {
 			this.attributes.put(attribName, glGetUniformLocation(this.programid, attribName));
+			if(this.attributes.get(attribName) == -1) {
+				throw new RuntimeException(attribName + " does not exist!");
+			}
 		}
 		result = this.attributes.get(attribName);
 		return result;

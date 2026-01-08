@@ -5,16 +5,20 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
+import engine.Entity;
 import engine.ShaderProgram;
 import engine.rendering_primitives.Canvas;
 import engine.rendering_primitives.Rect;
+import engine.rendering_primitives.Renderable;
 import engine.rendering_primitives.ShaderRect;
 import engine.rendering_primitives.Sprite;
+import engine.events.AbstractEvent;
 import engine.events.KeyListener;
 import engine.events.MouseListener;
 import engine.events.WindowResizeListener;
 
 import java.nio.*;
+import java.util.Optional;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -88,6 +92,32 @@ public class Main {
 		Canvas c = new Canvas(-0.46875f, 0.0f, 0.53125f, 1.0f, 544, 1024, 0.25f, 0.25f, 0.25f);
 		Canvas c2 = new Canvas(0.0f, 0.0f, 1.0f, 1.0f, 600, 600);
 		ShaderRect shad = new ShaderRect(0.0f, 0.0f, 1.0f, 1.0f, "src/shaders/vertexShader.glsl", "src/shaders/specialFragmentShader.glsl");
+		Entity en = new Entity() {
+			public void init() {
+				this.renderObject = Optional.of(new Rect());
+				this.visible = true;
+			}
+			public void update() {
+				this.renderObject.get().render();
+			}
+		};
+		
+		WindowResizeListener.addEvent(new AbstractEvent() {
+			private Canvas canv = c2;
+			
+			public void invoke() {
+				if(WindowResizeListener.getWidth() > WindowResizeListener.getHeight()) {
+					float ratio = ((float)WindowResizeListener.getHeight())/((float)WindowResizeListener.getWidth());
+					canv.size.x = ratio;
+					canv.size.y = 1.0f;
+				}else {
+					float ratio = ((float)WindowResizeListener.getWidth())/((float)WindowResizeListener.getHeight());
+					canv.size.y = ratio;
+					canv.size.x = 1.0f;
+				}
+			}
+		});
+		en.init();
 		
 		while(!glfwWindowShouldClose(window)) {
 			
@@ -104,18 +134,19 @@ public class Main {
 			r2.render();
 			s.render();
 			s2.render();
+			en.update();
 			
 			c.stopDrawing();
 			
-			if(WindowResizeListener.getWidth() > WindowResizeListener.getHeight()) {
-				float ratio = ((float)WindowResizeListener.getHeight())/((float)WindowResizeListener.getWidth());
-				c2.size.x = ratio;
-				c2.size.y = 1.0f;
-			}else {
-				float ratio = ((float)WindowResizeListener.getWidth())/((float)WindowResizeListener.getHeight());
-				c2.size.y = ratio;
-				c2.size.x = 1.0f;
-			}
+			//if(WindowResizeListener.getWidth() > WindowResizeListener.getHeight()) {
+			//	float ratio = ((float)WindowResizeListener.getHeight())/((float)WindowResizeListener.getWidth());
+			//	c2.size.x = ratio;
+			//	c2.size.y = 1.0f;
+			//}else {
+			//	float ratio = ((float)WindowResizeListener.getWidth())/((float)WindowResizeListener.getHeight());
+			//	c2.size.y = ratio;
+			//	c2.size.x = 1.0f;
+			//}
 			
 			c2.beginDrawing(WindowResizeListener.getWidth(), WindowResizeListener.getHeight());
 			c.render();
@@ -165,7 +196,6 @@ public class Main {
 		Canvas.cleanUp();
 		glfwDestroyWindow(window);
 		glfwSetErrorCallback(null).free();
-		
 	}
 	
 }

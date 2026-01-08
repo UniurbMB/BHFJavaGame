@@ -33,7 +33,7 @@ public class Canvas extends Rect{
 	private int lastWidth, lastHeight;
 	
 	private static int vao = 0, vbo = 0, ebo = 0;
-	private static ShaderProgram shader = null;
+	private static ShaderProgram shader = new ShaderProgram("src/shaders/spriteVertexShader.glsl", "src/shaders/spriteFragmentShader.glsl");
 	private static ArrayList<Canvas> canvases = new ArrayList<>();
 	
 	public Canvas(float posX, float posY,
@@ -72,10 +72,6 @@ public class Canvas extends Rect{
 	
 			glEnableVertexAttribArray(0);
 			glEnableVertexAttribArray(1);
-		}
-		
-		if(Canvas.shader == null) {
-			Canvas.shader = new ShaderProgram("src/shaders/spriteVertexShader.glsl", "src/shaders/spriteFragmentShader.glsl");
 		}
 		
 		this.frameBufferid = glGenFramebuffers();

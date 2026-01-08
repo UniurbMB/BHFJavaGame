@@ -20,8 +20,8 @@ public class Sprite extends Rect{
 	private int textureId;
 	
 	private static int vao = 0, vbo = 0, ebo = 0;
-	private static ShaderProgram shader = null;
-	private static HashMap<String, Integer> textures;
+	private static ShaderProgram shader = new ShaderProgram("src/shaders/spriteVertexShader.glsl", "src/shaders/spriteFragmentShader.glsl");
+	private static HashMap<String, Integer> textures = new HashMap<>();
 	
 	public Sprite(String texturePath, float posX, float posY, 
 				float width, float height,
@@ -29,8 +29,6 @@ public class Sprite extends Rect{
 		super(posX, posY, width, height, red, green, blue);
 		
 		if(Sprite.vbo == 0 && Sprite.vao == 0) {
-			
-			Sprite.textures = new HashMap<>();
 			
 			float[] arr = {	-1.0f, -1.0f, 0.0f,		0.0f, 0.0f,
 							-1.0f, 1.0f, 0.0f,		0.0f, 1.0f,
@@ -61,9 +59,6 @@ public class Sprite extends Rect{
 			glEnableVertexAttribArray(1);
 			
 		}
-		
-		if(Sprite.shader == null)
-			Sprite.shader = new ShaderProgram("src/shaders/spriteVertexShader.glsl", "src/shaders/spriteFragmentShader.glsl");
 		
 		if(Sprite.textures.containsKey(texturePath) == false) {
 			this.textureId = Sprite.loadImage(texturePath);

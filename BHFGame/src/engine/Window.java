@@ -123,11 +123,15 @@ public class Window {
 		this.frameInterval = 1.0f / (float)desiredFramerate;
 	}
 	
-	public void setCurrentScene(Scene s) {
-		if(this.currentScene != null) this.currentScene.cleanUp();
+	public void setCurrentScene(Scene s, boolean shouldCleanUp) {
+		if(this.currentScene != null && shouldCleanUp) this.currentScene.cleanUp();
 		this.currentScene = s;
 		this.currentScene.attachWindow(this);
 		this.currentScene.init();
+	}
+	
+	public void setCurrentScene(Scene s) {
+		this.setCurrentScene(s, true);
 	}
 	
 	public float getDelta() {

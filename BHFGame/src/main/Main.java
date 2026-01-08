@@ -43,7 +43,7 @@ public class Main {
 	
 	private static void init() {
 		window = new Window(900, 900, "Cool test", 60);
-		testScene = new TestScene();
+		testScene = new MenuScene();
 		window.setCurrentScene(testScene);
 	}
 	

@@ -131,10 +131,12 @@ public class Canvas extends Rect{
 	}
 	
 	public static void cleanUp() {
-		for(Canvas c: Canvas.canvases) {
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glDeleteFramebuffers(c.frameBufferid);
-			glDeleteTextures(c.textureid);
+		if(!Canvas.canvases.isEmpty()) {
+			for(Canvas c: Canvas.canvases) {
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				glDeleteFramebuffers(c.frameBufferid);
+				glDeleteTextures(c.textureid);
+			}
 		}
 		glBindVertexArray(Canvas.vao);
 		glBindBuffer(GL_ARRAY_BUFFER, Canvas.vbo);

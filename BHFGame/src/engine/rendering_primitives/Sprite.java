@@ -75,6 +75,31 @@ public class Sprite extends Rect{
 		
 	}
 	
+	public Sprite(String texturePath, float posX, float posY, 
+			float width, float height) {
+		this(texturePath, posX, posY, width, height, 1.0f, 1.0f, 1.0f);
+	}
+	
+	public Sprite(String texturePath, float posX, float posY) {
+		this(texturePath, posX, posY, 0.5f, 0.5f);
+	}
+	
+	public Sprite(String texturePath) {
+		this(texturePath, 0.0f, 0.0f);
+	}
+	
+	public Sprite(String texturePath, Vector2f pos, Vector2f size, Vector3f col) {
+		this(texturePath, pos.x, pos.y, size.x, size.y, col.x, col.y, col.z);
+	}
+	
+	public Sprite(String texturePath, Vector2f pos, Vector2f size) {
+		this(texturePath, pos, size, new Vector3f(1.0f, 1.0f, 1.0f));
+	}
+	
+	public Sprite(String texturePath, Vector2f pos) {
+		this(texturePath, pos, new Vector2f(0.5f, 0.5f));
+	}
+	
 	public void render() {
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBindVertexArray(vao);
@@ -98,9 +123,7 @@ public class Sprite extends Rect{
 		glDeleteVertexArrays(Sprite.vao);
 		glDeleteBuffers(Sprite.vbo);
 		glDeleteBuffers(Sprite.ebo);
-		for(Integer i: Sprite.textures.values()) {
-			glDeleteTextures(i);
-		}
+		if(!Sprite.textures.isEmpty())for(Integer i: Sprite.textures.values())glDeleteTextures(i);
 		Sprite.textures = null;
 		Sprite.shader.cleanup();
 	}

@@ -97,7 +97,7 @@ public class Rect implements Renderable{
 		glDeleteVertexArrays(Rect.vao);
 		glDeleteBuffers(Rect.vbo);
 		glDeleteBuffers(Rect.ebo);
-		Rect.shader.cleanup();
+		if(Rect.shader != null)Rect.shader.cleanup();
 	}
 
 	public static int getVao() {

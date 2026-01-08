@@ -1,23 +1,13 @@
 package engine.scenes;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
-import static org.lwjgl.opengl.GL30.glBindFramebuffer;
-
 import java.util.Optional;
 
-import engine.Entity;
-import engine.Scene;
-import engine.Window;
-import engine.events.AbstractEvent;
-import engine.events.KeyListener;
-import engine.events.WindowResizeListener;
+import engine.*;
+import engine.events.*;
 import engine.rendering_primitives.*;
+
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL33.*;
 
 public class TestScene extends Scene{
 	
@@ -61,7 +51,7 @@ public class TestScene extends Scene{
 	
 	@Override
 	public void update(float delta) {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		c.beginDrawing(WindowResizeListener.getWidth(), WindowResizeListener.getHeight());
 		glClear(GL_COLOR_BUFFER_BIT);
 		

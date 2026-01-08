@@ -62,16 +62,14 @@ public class Sprite extends Rect{
 			
 		}
 		
-		if(Sprite.shader == null) {
+		if(Sprite.shader == null)
 			Sprite.shader = new ShaderProgram("src/shaders/spriteVertexShader.glsl", "src/shaders/spriteFragmentShader.glsl");
-		}
 		
 		if(Sprite.textures.containsKey(texturePath) == false) {
 			this.textureId = Sprite.loadImage(texturePath);
 			Sprite.textures.put(texturePath, this.textureId);
-		}else {
-			this.textureId = Sprite.textures.get(texturePath);
-		}
+		}else this.textureId = Sprite.textures.get(texturePath);
+		
 		
 	}
 	
@@ -154,11 +152,10 @@ public class Sprite extends Rect{
 		channels = BufferUtils.createIntBuffer(1);
 		stbi_set_flip_vertically_on_load(true);
 		ByteBuffer image = stbi_load(texturePath, width, height, channels, 4);
-		if(image != null) {
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width.get(0), height.get(0), 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-		}else {
-			throw new RuntimeException("Failed to load sprite at path " + texturePath);
-		}
+		
+		if(image != null)glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width.get(0), height.get(0), 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+		else throw new RuntimeException("Failed to load sprite at path " + texturePath);
+		
 		stbi_image_free(image);
 		return result;
 	}

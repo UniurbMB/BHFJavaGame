@@ -4,6 +4,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL33.*;
 
 import engine.Scene;
+import engine.Sound;
 import engine.events.KeyListener;
 import engine.rendering_primitives.Rect;
 
@@ -11,6 +12,13 @@ public class MenuScene extends Scene{
 	
 	private boolean debounce = false;
 	Rect r = new Rect();
+	Sound s = Sound.newSound("src/assets/sounds/soundcheck.ogg", true);
+	
+	@Override
+	public void init() {
+		s.play();
+	}
+	
 	@Override
 	public void update(float delta) {
 		
@@ -22,11 +30,23 @@ public class MenuScene extends Scene{
 		if(KeyListener.isKeyPressed(GLFW_KEY_ESCAPE) && debounce) {
 			w.setShouldClose(true);
 		}else if(!KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)){
-			debounce = true;
+			if(KeyListener.isKeyPressed(GLFW_KEY_P) && debounce) {
+				debounce = false;
+				if(s.isPlaying())s.pause();
+				else s.play();
+			}else if(!KeyListener.isKeyPressed(GLFW_KEY_P)) {
+				debounce = true;
+			}
 		}
+		
 		if(KeyListener.isKeyPressed(GLFW_KEY_ENTER)) {
 			w.setCurrentScene(new TestScene());
 		}
+	}
+	
+	@Override
+	public void cleanUp() {
+		s.stop();
 	}
 
 }

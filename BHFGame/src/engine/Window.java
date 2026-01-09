@@ -1,9 +1,11 @@
 package engine;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.openal.ALC10.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.openal.*;
 import org.lwjgl.opengl.GL;
 
 import engine.events.KeyListener;
@@ -20,6 +22,9 @@ public class Window {
 	private int desiredFramerate;
 	private float frameInterval;
 	private Scene currentScene = null;
+	
+	private long audioContext;
+	private long audioDevice;
 	
 	public Window(int width, int height, String title, int desiredFramerate, boolean resizable, boolean fullScreen) {
 		this.WINDOW_WIDTH = width;
@@ -53,6 +58,19 @@ public class Window {
 		glfwMakeContextCurrent(this.window);
 		glfwShowWindow(this.window);
 		
+		String defaultAudioDevice = alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER);
+		audioDevice = alcOpenDevice(defaultAudioDevice);
+		
+		int[] attributes = {0};
+		audioContext = alcCreateContext(audioDevice, attributes);
+		alcMakeContextCurrent(audioContext);
+		
+		ALCCapabilities alcCapabilities = ALC.createCapabilities(audioDevice);
+		ALCapabilities alCapabilities = AL.createCapabilities(alcCapabilities);
+		
+		if(!alCapabilities.OpenAL10) {
+			throw new RuntimeException("OpenAL10 is not supported on this device!");
+		}
 		
 		GL.createCapabilities(true);
 		
@@ -107,6 +125,8 @@ public class Window {
 	public void destroy() {
 		if(this.currentScene != null)this.currentScene.cleanUp();
 		glfwDestroyWindow(window);
+		alcDestroyContext(this.audioContext);
+		alcCloseDevice(this.audioDevice);
 		glfwSetErrorCallback(null).free();
 	}
 	

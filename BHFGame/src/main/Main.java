@@ -54,7 +54,6 @@ public class Main {
 	}
 
 	private static void cleanup() {
-		Rect.cleanUp();
 		Sprite.cleanUp();
 		Canvas.cleanUp();
 		window.destroy();

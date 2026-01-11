@@ -6,12 +6,13 @@ import static org.lwjgl.opengl.GL33.*;
 import engine.Scene;
 import engine.Sound;
 import engine.events.KeyListener;
-import engine.rendering_primitives.Rect;
+import engine.rendering_primitives.*;
 
 public class MenuScene extends Scene{
 	
 	private boolean debounce = false;
 	Rect r = new Rect();
+	Ellipse e = new Ellipse(0.5f, -0.5f);
 	Sound s = Sound.newSound("src/assets/sounds/soundcheck.ogg", true);
 	
 	@Override
@@ -26,6 +27,7 @@ public class MenuScene extends Scene{
 		glClear(GL_COLOR_BUFFER_BIT);
 		
 		r.render();
+		e.render();
 		
 		if(KeyListener.isKeyPressed(GLFW_KEY_ESCAPE) && debounce) {
 			w.setShouldClose(true);

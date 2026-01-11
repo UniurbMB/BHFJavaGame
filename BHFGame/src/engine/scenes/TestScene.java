@@ -18,7 +18,7 @@ public class TestScene extends Scene{
 	Sprite s2 = new Sprite("src/assets/images/test.png", -0.5f, 0.5f, 1.0f, 0.25f, 1.0f, 1.0f, 1.0f);
 	Canvas c = new Canvas(-0.46875f, 0.0f, 0.53125f, 1.0f, 544, 1024, 0.25f, 0.25f, 0.25f);
 	Canvas c2 = new Canvas(0.0f, 0.0f, 1.0f, 1.0f, 600, 600);
-	ShaderRect shad = new ShaderRect(0.0f, 0.0f, 1.0f, 1.0f, "src/shaders/vertexShader.glsl", "src/shaders/specialFragmentShader.glsl");
+	/*
 	Entity en = new Entity() {
 		public void init() {
 			this.renderObject = Optional.of(new Rect());
@@ -28,6 +28,7 @@ public class TestScene extends Scene{
 			this.renderObject.get().render();
 		}
 	};
+	*/
 	
 	AbstractEvent windowResizeEvent = new AbstractEvent() {
 		private Canvas canv = c2;
@@ -48,12 +49,11 @@ public class TestScene extends Scene{
 	public void init() {
 		WindowResizeListener.addEvent(windowResizeEvent);
 		windowResizeEvent.invoke();
-		en.init();
+		//en.init();
 	}
 	
 	@Override
 	public void update(float delta) {
-		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		c.beginDrawing(WindowResizeListener.getWidth(), WindowResizeListener.getHeight());
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -62,7 +62,7 @@ public class TestScene extends Scene{
 		r2.render();
 		s.render();
 		s2.render();
-		en.update();
+		//en.update();
 		
 		c.stopDrawing();
 		
@@ -72,7 +72,6 @@ public class TestScene extends Scene{
 		c2.stopDrawing();
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		shad.render();
 		c2.render();
 		
 		
@@ -96,7 +95,7 @@ public class TestScene extends Scene{
 		r2.render();
 		s.render();
 		s2.render();
-		en.update();
+		//en.update();
 		
 		c.stopDrawing();
 		
@@ -106,7 +105,6 @@ public class TestScene extends Scene{
 		c2.stopDrawing();
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		shad.render();
 		c2.render();
 		
 		if(w == null) {
@@ -123,6 +121,8 @@ public class TestScene extends Scene{
 	
 	@Override
 	public void cleanUp() {
+		c.delete();
+		c2.delete();
 		WindowResizeListener.removeEvent(windowResizeEvent);
 	}
 

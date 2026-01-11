@@ -19,6 +19,7 @@ import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import engine.ShaderProgram;
+import engine.Window;
 
 public class Ellipse extends Rect{
 
@@ -56,6 +57,7 @@ public class Ellipse extends Rect{
 	}
 
 	public void render() {
+		Matrix4f projection = Window.projection;
 		shader.start();
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBindVertexArray(vao);
@@ -63,7 +65,7 @@ public class Ellipse extends Rect{
 		int transformPos = shader.getAttribLocation("transform");
 		int colorPos = shader.getAttribLocation("color");
 		FloatBuffer fb = BufferUtils.createFloatBuffer(16);
-		new Matrix4f().translate(new Vector3f(this.pos, 0.0f)).scale(new Vector3f(this.size, 1.0f)).get(fb);
+		new Matrix4f().mul(projection).translate(new Vector3f(this.pos, 0.0f)).scale(new Vector3f(this.size, 1.0f)).get(fb);
 		
 		
 		glUniformMatrix4fv(transformPos, false, fb);

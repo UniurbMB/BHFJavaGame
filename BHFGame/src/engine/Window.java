@@ -4,6 +4,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.openal.ALC10.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.openal.*;
 import org.lwjgl.opengl.GL;
@@ -13,6 +14,9 @@ import engine.events.MouseListener;
 import engine.events.WindowResizeListener;
 
 public class Window {
+	
+	public static Matrix4f projection = new Matrix4f();
+	
 	private final int WINDOW_WIDTH;
 	private final int WINDOW_HEIGHT;
 	private final String WINDOW_TITLE;

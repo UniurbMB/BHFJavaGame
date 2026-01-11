@@ -11,6 +11,7 @@ import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import engine.ShaderProgram;
+import engine.Window;
 
 import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.stb.STBImage.*;
@@ -97,6 +98,7 @@ public class Sprite extends RenderingPrimitive{
 	}
 	
 	public void render() {
+		Matrix4f projection = new Matrix4f(Window.projection);
 		shader.start();
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBindVertexArray(vao);
@@ -104,7 +106,8 @@ public class Sprite extends RenderingPrimitive{
 		int transformPos = shader.getAttribLocation("transform");
 		int colorPos = shader.getAttribLocation("color");
 		FloatBuffer fb = BufferUtils.createFloatBuffer(16);
-		new Matrix4f().translate(new Vector3f(this.pos, 0.0f)).scale(new Vector3f(this.size, 1.0f)).get(fb);
+		
+		new Matrix4f().mul(projection).translate(new Vector3f(this.pos, 0.0f)).scale(new Vector3f(this.size, 1.0f)).get(fb);
 		
 		glUniformMatrix4fv(transformPos, false, fb);
 		glUniform3f(colorPos, this.color.x, this.color.y, this.color.z);

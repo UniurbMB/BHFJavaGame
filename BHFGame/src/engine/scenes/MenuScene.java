@@ -3,8 +3,11 @@ package engine.scenes;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL33.*;
 
+import org.joml.Matrix4f;
+
 import engine.Scene;
 import engine.Sound;
+import engine.Window;
 import engine.events.KeyListener;
 import engine.rendering_primitives.*;
 

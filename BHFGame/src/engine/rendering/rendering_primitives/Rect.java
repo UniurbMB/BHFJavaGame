@@ -1,4 +1,4 @@
-package engine.rendering_primitives;
+package engine.rendering.rendering_primitives;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;

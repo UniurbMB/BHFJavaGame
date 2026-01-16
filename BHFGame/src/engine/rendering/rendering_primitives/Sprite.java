@@ -1,4 +1,4 @@
-package engine.rendering_primitives;
+package engine.rendering.rendering_primitives;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;

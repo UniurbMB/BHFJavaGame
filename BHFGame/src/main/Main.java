@@ -9,12 +9,12 @@ import engine.Entity;
 import engine.Scene;
 import engine.ShaderProgram;
 import engine.Window;
-import engine.rendering_primitives.*;
 import engine.scenes.*;
 import engine.events.AbstractEvent;
 import engine.events.KeyListener;
 import engine.events.MouseListener;
 import engine.events.WindowResizeListener;
+import engine.rendering.rendering_primitives.*;
 
 import java.nio.*;
 import java.util.Optional;

@@ -9,7 +9,7 @@ import engine.Scene;
 import engine.Sound;
 import engine.Window;
 import engine.events.KeyListener;
-import engine.rendering_primitives.*;
+import engine.rendering.rendering_primitives.*;
 
 public class MenuScene extends Scene{
 	

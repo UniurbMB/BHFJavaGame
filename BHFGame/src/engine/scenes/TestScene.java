@@ -6,7 +6,7 @@ import org.joml.Matrix4f;
 
 import engine.*;
 import engine.events.*;
-import engine.rendering_primitives.*;
+import engine.rendering.rendering_primitives.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL33.*;

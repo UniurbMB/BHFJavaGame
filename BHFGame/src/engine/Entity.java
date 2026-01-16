@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.joml.Vector2f;
 
-import engine.rendering_primitives.Renderable;
+import engine.rendering.rendering_primitives.Renderable;
 
 public abstract class Entity {
 	

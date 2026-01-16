@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL33.*;
 
 import engine.Scene;
 import engine.events.KeyListener;
-import engine.rendering_primitives.*;
+import engine.rendering.rendering_primitives.*;
 
 public class PauseScene extends Scene{
 	

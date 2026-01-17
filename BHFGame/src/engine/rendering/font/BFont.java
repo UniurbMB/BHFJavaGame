@@ -1,22 +1,24 @@
 package engine.rendering.font;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.util.*;
 
 import javax.imageio.ImageIO;
+
+import org.lwjgl.BufferUtils;
+
+import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.system.libc.LibCStdlib.free;
 
 public class BFont {
 	
 	private String filepath;
 	private int fontsize;
+	
+	private int textureid;
 	
 	private int width, height, lineheight;
 	private Map<Integer, CharInfo> characterMap;
@@ -77,12 +79,48 @@ public class BFont {
 		
 		g2d.dispose();
 		
-		try {
-			File file = new File("test.png");
-			ImageIO.write(img, "png", file);
-		}catch(IOException e) {
-			e.printStackTrace();
+		uploadTexture(img);
+	}
+	
+	public CharInfo getCharacter(int codepoint) {
+		return this.characterMap.getOrDefault(codepoint, new CharInfo(0, 0, 0, 0));
+	}
+	
+	private void uploadTexture(BufferedImage img) {
+		int[] pixels = new int[img.getHeight() * img.getWidth()];
+		img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+		
+		ByteBuffer buffer = BufferUtils.createByteBuffer(img.getWidth() * img.getHeight() * 4);
+		for(int y = 0; y < img.getHeight(); y++) {
+			for(int x = 0; x < img.getWidth(); x++) {
+				int totalSize = img.getHeight() * img.getWidth();
+				int pixel = pixels[(y * img.getWidth() + x)];
+				byte alpha = (byte)((pixel >> 24) & 0xff);
+				byte bx = (byte)(((float)x / (float)img.getWidth()) * (float)Byte.MAX_VALUE);
+				buffer.put(alpha);
+				buffer.put(alpha);
+				buffer.put(alpha);
+				buffer.put(alpha);
+				//System.out.println("x: " + x + ", y: " + y + ", test: " + bx);
+			}
 		}
+		System.out.println("width: " + img.getWidth() + ", height: " + img.getHeight());
+		buffer.flip();
+		
+		this.textureid = glGenTextures();
+		glBindTexture(GL_TEXTURE_2D, this.textureid);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, img.getWidth(), img.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		
+		free(buffer);
+	}
+	
+	public int getTextureid() {
+		return this.textureid;
 	}
 	
 }

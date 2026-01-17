@@ -165,8 +165,4 @@ public class Sprite extends RenderingPrimitive{
 		
 		return result;
 	}
-	
-	public int getTextureid() {
-		return this.textureid;
-	}
 }

@@ -54,8 +54,6 @@ public abstract class RenderingPrimitive implements Renderable{
 	
 	public abstract void render();
 	
-	public void destroy() {}
-	
 	public static void cleanUpPrimitive() {
 		shader.cleanup();
 	}

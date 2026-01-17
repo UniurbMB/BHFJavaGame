@@ -17,7 +17,7 @@ public class TestScene extends Scene{
 	Rect r2 = new Rect(-0.5f, -0.65f, 0.125f, 0.45f, 0.0f, 1.0f, 0.0f);
 	Rect r3 = new Rect(0.53125f, 0.0f, 0.46875f, 1.0f, 0.98f, 0.15f, 0.65f);
 	Sprite s = new Sprite("src/assets/images/test.png", 0.5f, 0.5f, 0.25f, 0.6f, 1.0f, 1.0f, 0.0f);
-	Sprite s2 = new Sprite("src/assets/images/test.png", -0.5f, 0.5f, 0.25f, 0.25f, 1.0f, 1.0f, 1.0f);
+	Sprite s2 = new Sprite("src/assets/images/ship.png", -0.5f, 0.5f, 0.25f, 0.25f, 1.0f, 1.0f, 1.0f);
 	Canvas c = new Canvas(-0.46875f, 0.0f, 0.53125f, 1.0f, 544, 1024, 0.25f, 0.25f, 0.25f);
 	Canvas c2 = new Canvas(0.0f, 0.0f, 1.0f, 1.0f, 600, 600);
 	Ellipse e = new Ellipse(0.0f, 2.5f, 1.0f, 1.0f);

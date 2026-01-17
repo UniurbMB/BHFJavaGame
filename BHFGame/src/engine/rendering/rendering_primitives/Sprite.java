@@ -126,6 +126,14 @@ public class Sprite extends RenderingPrimitive{
 		Sprite.shader.cleanup();
 	}
 	
+	public void setTextureid(int textureid) {
+		this.textureid = textureid;
+	}
+	
+	public int getTextureid() {
+		return this.textureid;
+	}
+	
 	private static int loadImage(String texturePath) {
 		int result = glGenTextures();
 		glActiveTexture(GL_TEXTURE0);

@@ -29,7 +29,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 public class Main {
 	
 	private static Window window;
-	private static Scene testScene;
+	private static Scene scene;
 	
 	public static void main(String[] args) {
 		
@@ -43,8 +43,8 @@ public class Main {
 	
 	private static void init() {
 		window = new Window(1967, 967, "Cool test", 60);
-		testScene = new MenuScene();
-		window.setCurrentScene(testScene);
+		scene = new MenuScene();
+		window.setCurrentScene(scene);
 	}
 	
 	private static void update() {

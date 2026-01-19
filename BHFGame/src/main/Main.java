@@ -30,7 +30,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 public class Main {
 	
 	private static Window window;
-	private static Scene testScene;
+	private static Scene scene;
 	
 	public static void main(String[] args) {
 		
@@ -43,25 +43,13 @@ public class Main {
 	}
 	
 	private static void init() {
-		window = new Window(1967, 600, "Cool test", 60);
-		testScene = new FontTestScene();
+		window = new Window(600, 600, "Cool test", 60);
+		scene = new FontTestScene();
 		//String filepath = "src/assets/fonts/yuji-syuku-japanese-400-normal.ttf";
 		//stbtt_InitFont();
-		//BFont font = new BFont(filepath, 24);
+		//BFont font = new BFont(filepath, 24);	
 		
-		try (MemoryStack s = stackPush()) {
-            FloatBuffer px = s.mallocFloat(1);
-            FloatBuffer py = s.mallocFloat(1);
-            long monitor = glfwGetPrimaryMonitor();
-            glfwGetMonitorContentScale(monitor, px, py);
-
-            float contentScaleX = px.get(0);
-            float contentScaleY = py.get(0);
-            System.out.println(contentScaleX);
-		}
-		
-		
-		window.setCurrentScene(testScene);
+		window.setCurrentScene(scene);
 	}
 	
 	private static void update() {

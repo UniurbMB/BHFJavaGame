@@ -5,20 +5,22 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
+import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.stb.STBTTAlignedQuad;
 import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.stb.STBTTFontinfo;
-import org.lwjgl.stb.STBTTPackedchar;
 import org.lwjgl.system.MemoryStack;
+
+import engine.rendering.rendering_primitives.Sprite;
 
 import static org.lwjgl.BufferUtils.*;
 import static org.lwjgl.system.MemoryUtil.*;
@@ -26,21 +28,34 @@ import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.stb.STBTruetype.*;
 import static org.lwjgl.opengl.GL33.*;
 
-public class BFont {
-	private int textureid;
-	private int width, height;
+public class BFont extends Sprite{
+	
 	private float fontSize;
 	private STBTTFontinfo info;
 	private STBTTBakedChar.Buffer cdata;
 	private ByteBuffer ttf;
+	private static HashMap<String, BFont> loadedFonts = new HashMap<>();
 	
-	private final int ascent;
-    private final int descent;
-    private final int lineGap;
-	
+    public BFont(String filePath, float fontSize,
+    			float posX, float posY,
+    			float width, float height,
+    			float red, float green, float blue) {
+    	this(filePath, fontSize);
+    	this.pos.x = posX;
+    	this.pos.y = posY;
+    	this.size.x = width;
+    	this.size.y = -height;
+    	this.color.x = red;
+    	this.color.y = green;
+    	this.color.z = blue;
+    	
+    }
+    
 	public BFont(String filePath, float fontSize) {
+		if(!BFont.loadedFonts.containsKey(filePath)) {
 		this.textureid = glGenTextures();
 		this.fontSize = fontSize;
+		this.size.y *= -1.0f;
 		ByteBuffer bitmap = BufferUtils.createByteBuffer(1024 * 1024);
 		try {
 			this.ttf = ioResourceToByteBuffer(filePath, 1024 * 1024);
@@ -51,48 +66,67 @@ public class BFont {
 		stbtt_InitFont(info, ttf);
 		
 		cdata = STBTTBakedChar.malloc(96);
-		try (MemoryStack stack = stackPush()) {
-            IntBuffer pAscent  = stack.mallocInt(1);
-            IntBuffer pDescent = stack.mallocInt(1);
-            IntBuffer pLineGap = stack.mallocInt(1);
-
-            stbtt_GetFontVMetrics(info, pAscent, pDescent, pLineGap);
-
-            ascent = pAscent.get(0);
-            descent = pDescent.get(0);
-            lineGap = pLineGap.get(0);
-        }
 		stbtt_BakeFontBitmap(ttf, fontSize, bitmap, 1024, 1024, 32, cdata);
 		glBindTexture(GL_TEXTURE_2D, textureid);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, 1024, 1024, 0, GL_ALPHA, GL_UNSIGNED_BYTE, bitmap);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		}else {
+			BFont f = BFont.loadedFonts.get(filePath);
+			this.textureid = f.textureid;
+			this.fontSize = f.fontSize;
+			this.size.y = f.size.y;
+			this.ttf = f.ttf;
+			this.info = f.info;
+		}
 	}
 	
 	public BFontGlyph getGlyph(char c) {
 		BFontGlyph glyph = null;
 		try (MemoryStack stack = stackPush()){
-			IntBuffer codepoint = stack.mallocInt(1);
 			STBTTAlignedQuad quad = STBTTAlignedQuad.malloc(stack);
-			//int codepoint = Character.codePointAt(t, 0);
-		//	stbtt_GetBakedQuad(cdata, 1024, 1024, codepoint, x, y, quad, true);
+			FloatBuffer x = stack.floats(0.0f);
+            FloatBuffer y = stack.floats(0.0f);
+            char[] t = new char[1];
+            t[0] = c;
+			int codepoint = Character.codePointAt(t, 0);
+			stbtt_GetBakedQuad(cdata, 1024, 1024, codepoint - 32, x, y, quad, true);
+			glyph = new BFontGlyph(this, 0.0f, 0.0f, 
+					0.5f, 0.5f, 
+					1.0f, 1.0f, 1.0f, 
+					quad.s0(), quad.t0(), quad.s1(), quad.t1());
 		}
 		
-		FloatBuffer x = FloatBuffer.allocate(1);
-		FloatBuffer y = FloatBuffer.allocate(1);
-		char[] t = new char[1];
-		t[0] = c;
-		
-		//System.out.println(codepoint);
-		//stbtt_GetBakedQuad(cdata, 1024, 1024, c, x, y, quad, true);
-		//System.out.println(quad.x0() + " " + quad.x1() + " " + quad.y0() + " " + quad.y1());
 		return glyph;
+	}
+	
+	public Vector2f[] getGlyphPos(char c) {
+		Vector2f[] result = new Vector2f[2];
+		result[0] = new Vector2f();
+		result[1] = new Vector2f();
+		try (MemoryStack stack = stackPush()){
+			STBTTAlignedQuad quad = STBTTAlignedQuad.malloc(stack);
+			FloatBuffer x = stack.floats(0.0f);
+            FloatBuffer y = stack.floats(0.0f);
+            char[] t = new char[1];
+            t[0] = c;
+			int codepoint = Character.codePointAt(t, 0);
+			stbtt_GetBakedQuad(cdata, 1024, 1024, codepoint - 32, x, y, quad, true);
+			result[0] = new Vector2f(quad.s0(), quad.t0());
+			result[1] = new Vector2f(quad.s1(), quad.t1());
+		}
+		return result;
+	}
+	
+	public float getFontSize() {
+		return this.fontSize;
 	}
 	
 	public int getTextureid() {
 		return this.textureid;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
         ByteBuffer buffer;
 

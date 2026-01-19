@@ -85,7 +85,8 @@ public class Canvas extends Sprite{
 		Canvas.shader.cleanup();
 	}
 	
-	public void delete() {
+	@Override
+	public void destroy() {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDeleteFramebuffers(this.frameBufferid);
 		glDeleteTextures(this.textureid);

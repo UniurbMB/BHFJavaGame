@@ -108,8 +108,8 @@ public class TestScene extends Scene{
 	
 	@Override
 	public void cleanUp() {
-		c.delete();
-		c2.delete();
+		c.destroy();
+		c2.destroy();
 		WindowResizeListener.removeEvent(windowResizeEvent);
 	}
 

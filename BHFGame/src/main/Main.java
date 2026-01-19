@@ -14,7 +14,6 @@ import engine.events.AbstractEvent;
 import engine.events.KeyListener;
 import engine.events.MouseListener;
 import engine.events.WindowResizeListener;
-import engine.rendering.font.BFont;
 import engine.rendering.rendering_primitives.*;
 
 import java.nio.*;
@@ -30,7 +29,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 public class Main {
 	
 	private static Window window;
-	private static Scene scene;
+	private static Scene testScene;
 	
 	public static void main(String[] args) {
 		
@@ -43,13 +42,9 @@ public class Main {
 	}
 	
 	private static void init() {
-		window = new Window(600, 600, "Cool test", 60);
-		scene = new FontTestScene();
-		//String filepath = "src/assets/fonts/yuji-syuku-japanese-400-normal.ttf";
-		//stbtt_InitFont();
-		//BFont font = new BFont(filepath, 24);	
-		
-		window.setCurrentScene(scene);
+		window = new Window(1967, 967, "Cool test", 60);
+		testScene = new MenuScene();
+		window.setCurrentScene(testScene);
 	}
 	
 	private static void update() {

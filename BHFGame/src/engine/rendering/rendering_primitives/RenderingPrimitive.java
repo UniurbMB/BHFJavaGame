@@ -10,7 +10,8 @@ public abstract class RenderingPrimitive implements Renderable{
 	public Vector2f pos, size;
 	
 	protected static int vao = 0, vbo = 0, ebo = 0;
-	protected final static ShaderProgram shader = new ShaderProgram("src/shaders/spriteVertexShader.glsl", "src/shaders/spriteFragmentShader.glsl");
+	protected final static ShaderProgram shader = new ShaderProgram("src/shaders/spriteVertexShader.glsl",
+																	"src/shaders/spriteFragmentShader.glsl");
 	
 	public RenderingPrimitive(float posX, float posY, 
 			float width, float height) {
@@ -57,6 +58,8 @@ public abstract class RenderingPrimitive implements Renderable{
 	public static void cleanUpPrimitive() {
 		shader.cleanup();
 	}
+	
+	public void destroy() {}
 
 	public static int getVao() {
 		return vao;

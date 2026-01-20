@@ -4,7 +4,10 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.openal.ALC10.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import java.nio.IntBuffer;
+
 import org.joml.Matrix4f;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.openal.*;
 import org.lwjgl.opengl.GL;
@@ -77,8 +80,12 @@ public class Window {
 		}
 		
 		GL.createCapabilities(true);
-		
-		WindowResizeListener.init(WINDOW_WIDTH, WINDOW_HEIGHT);
+		IntBuffer w = BufferUtils.createIntBuffer(1);
+		IntBuffer h = BufferUtils.createIntBuffer(1);
+		glfwGetWindowSize(window, w, h);
+		int iw = w.get();
+		int ih = h.get();
+		WindowResizeListener.init(iw, ih);
 		glfwSetCursorPosCallback(window, MouseListener::mousePosCallback);
 		glfwSetMouseButtonCallback(window, MouseListener::mouseButtonCallback);
 		glfwSetScrollCallback(window, MouseListener::mouseScrollCallback);

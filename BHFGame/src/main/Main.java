@@ -1,30 +1,8 @@
 package main;
 
-import org.lwjgl.*;
-import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
-import org.lwjgl.system.*;
-
-import engine.Entity;
-import engine.Scene;
-import engine.ShaderProgram;
-import engine.Window;
+import engine.*;
 import engine.scenes.*;
-import engine.events.AbstractEvent;
-import engine.events.KeyListener;
-import engine.events.MouseListener;
-import engine.events.WindowResizeListener;
 import engine.rendering.rendering_primitives.*;
-
-import java.nio.*;
-import java.util.Optional;
-
-import static org.lwjgl.glfw.Callbacks.*;
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL33.*;
-import static org.lwjgl.system.MemoryStack.*;
-import static org.lwjgl.system.MemoryUtil.*;
-
 
 public class Main {
 	
@@ -42,7 +20,7 @@ public class Main {
 	}
 	
 	private static void init() {
-		window = new Window(1967, 967, "Cool test", 60);
+		window = new Window(1900, 967, "Bullet Heaven Monday", 60, false);
 		scene = new MenuScene();
 		window.setCurrentScene(scene);
 	}

@@ -23,7 +23,7 @@ public class CollisionCircle extends CollisionObject{
 			System.out.println("{" + c.pos.x + ", " + c.pos.y + "}");
 			System.out.println("{" + vectorDistance.x + ", " + vectorDistance.y + "}");*/
 			float distance = vectorDistance.length();
-			System.out.println(distance);
+			//System.out.println(distance);
 			return distance <= this.radius + c.radius;
 		}else if(obj instanceof CollisionPoint) {
 			CollisionPoint p = (CollisionPoint)obj;

@@ -5,8 +5,10 @@ import java.util.Optional;
 import org.joml.Vector2f;
 
 import engine.collision.collision_shapes.CollisionObject;
+import engine.events.AbstractEvent;
 import engine.rendering.rendering_primitives.Renderable;
 import engine.rendering.rendering_primitives.RenderingPrimitive;
+
 
 public abstract class Entity {
 	
@@ -16,6 +18,7 @@ public abstract class Entity {
 	public Vector2f pos;
 	public Vector2f renderOffset;
 	public Vector2f colliderOffset;
+	private Optional<AbstractEvent> collisionEvent;
 	
 	public Entity(RenderingPrimitive renderObject, CollisionObject collider,
 			float x, float y,
@@ -53,6 +56,10 @@ public abstract class Entity {
 		if(this.visible) {
 			this.renderObject.render();
 		}
+	}
+	
+	public final CollisionObject getCollider() {
+		return this.collider;
 	}
 
 }

@@ -5,12 +5,15 @@ import static org.lwjgl.opengl.GL33.*;
 
 import engine.Entity;
 import engine.Scene;
+import engine.collision.QuadTree;
 import engine.collision.collision_shapes.*;
 import engine.events.KeyListener;
 import engine.rendering.rendering_primitives.*;
 
 public class CollisionTestScene extends Scene {
 
+	QuadTree tree = new QuadTree(3, 2);
+	
 	Entity e1 = new Entity(new Rect(0.0f, 0.0f, 0.25f, 0.25f),
 			new CollisionRect(0.0f, 0.0f, 0.25f, 0.25f), 0.0f, 0.0f){
 
@@ -41,7 +44,7 @@ public class CollisionTestScene extends Scene {
 		@Override
 		public void update(float delta) {
 			this.align();
-			
+			/*
 			if(e2.testCollision(e1)) {
 				((Rect)this.renderObject).color.x = 0.0f;
 			}else {
@@ -53,6 +56,7 @@ public class CollisionTestScene extends Scene {
 			}else {
 				((Rect)this.renderObject).color.x = 1.0f;
 			}
+			*/
 			
 			
 			this.render();
@@ -67,9 +71,9 @@ public class CollisionTestScene extends Scene {
 		@Override
 		public void update(float delta) {
 			this.align();
-			System.out.println("{" + e4.pos.x + ", " + e4.pos.y + "}");
+			//System.out.println("{" + e4.pos.x + ", " + e4.pos.y + "}");
 			//System.out.println("{" + e4.collider.pos.x + ", " + e4.collider.pos.y + "}");
-			
+			/*
 			if(this.testCollision(e4)) {
 				((Rect)this.renderObject).color.z = 0.0f;
 			}
@@ -78,6 +82,7 @@ public class CollisionTestScene extends Scene {
 			}else {
 				((Rect)this.renderObject).color.z = 1.0f;
 			}
+			*/
 			
 			this.render();
 		}
@@ -116,6 +121,12 @@ public class CollisionTestScene extends Scene {
 	};
 	
 	@Override
+	public void init() {
+		tree.addObject(e2.getCollider());
+		//tree.addObject(e3.getCollider());
+	}
+	
+	@Override
 	public void update(float delta) {
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -124,7 +135,12 @@ public class CollisionTestScene extends Scene {
 		e1.update(delta);
 		e2.update(delta);
 		e3.update(delta);
+		
+		tree.addObject(e1.getCollider());
+		
+		if(tree.testCollision(e4.getCollider()))System.out.println("Collision!");
 
+		tree.removeObject(e1.getCollider());
 	}
 
 }

@@ -1,6 +1,7 @@
 package engine.collision.collision_shapes;
 
 import org.joml.Vector2f;
+import engine.rendering.rendering_primitives.*;
 
 public class CollisionPoint extends CollisionObject{
 

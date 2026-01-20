@@ -6,17 +6,18 @@ import org.joml.Vector2f;
 
 import engine.collision.collision_shapes.CollisionObject;
 import engine.rendering.rendering_primitives.Renderable;
+import engine.rendering.rendering_primitives.RenderingPrimitive;
 
 public abstract class Entity {
 	
 	protected boolean visible = true;
-	protected Renderable renderObject;
+	protected RenderingPrimitive renderObject;
 	protected CollisionObject collider;
 	public Vector2f pos;
 	public Vector2f renderOffset;
 	public Vector2f colliderOffset;
 	
-	public Entity(Renderable renderObject, CollisionObject collider,
+	public Entity(RenderingPrimitive renderObject, CollisionObject collider,
 			float x, float y,
 			float renderOffsetX, float renderOffsetY,
 			float colliderOffsetX, float colliderOffsetY) {
@@ -27,12 +28,31 @@ public abstract class Entity {
 		this.colliderOffset = new Vector2f(colliderOffsetX, colliderOffsetY);
 	}
 	
-	public Entity(Renderable renderObject, CollisionObject collider,
+	public Entity(RenderingPrimitive renderObject, CollisionObject collider,
 			float x, float y) {
 		this(renderObject, collider, x, y, 0.0f, 0.0f, 0.0f, 0.0f);
 	}
 	
 	public void init() {}
-	public abstract void update();
+	public abstract void update(float delta);
+	
+	public boolean testCollision(Entity e) {
+		this.align();
+		e.align();
+		return this.collider.testCollision(e.collider);
+	}
+	
+	public final void align() {
+		this.collider.pos.x = this.pos.x + this.colliderOffset.x;
+		this.collider.pos.y = this.pos.y + this.colliderOffset.y;
+		this.renderObject.pos.x = this.pos.x + this.renderOffset.x;
+		this.renderObject.pos.y = this.pos.y + this.renderOffset.y;
+	}
+	
+	public final void render() {
+		if(this.visible) {
+			this.renderObject.render();
+		}
+	}
 
 }

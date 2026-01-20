@@ -18,8 +18,12 @@ public class CollisionCircle extends CollisionObject{
 	public <X extends CollisionObject> boolean testCollision(X obj) {
 		if(obj instanceof CollisionCircle) {
 			CollisionCircle c = (CollisionCircle)obj;
-			Vector2f vectorDistance = this.pos.sub(c.pos);
-			float distance = (float)Math.sqrt(Math.pow(vectorDistance.x, 2) + Math.pow(vectorDistance.y, 2));
+			Vector2f vectorDistance = new Vector2f(this.pos.x - c.pos.x, this.pos.y - c.pos.y);
+			/*System.out.println("{" + this.pos.x + ", " + this.pos.y + "}");
+			System.out.println("{" + c.pos.x + ", " + c.pos.y + "}");
+			System.out.println("{" + vectorDistance.x + ", " + vectorDistance.y + "}");*/
+			float distance = vectorDistance.length();
+			System.out.println(distance);
 			return distance <= this.radius + c.radius;
 		}else if(obj instanceof CollisionPoint) {
 			CollisionPoint p = (CollisionPoint)obj;

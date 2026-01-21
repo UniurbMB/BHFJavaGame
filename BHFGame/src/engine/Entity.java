@@ -5,8 +5,7 @@ import java.util.Optional;
 import org.joml.Vector2f;
 
 import engine.collision.collision_shapes.CollisionObject;
-import engine.events.AbstractEvent;
-import engine.rendering.rendering_primitives.Renderable;
+import engine.events.CollisionEvent;
 import engine.rendering.rendering_primitives.RenderingPrimitive;
 
 
@@ -18,17 +17,26 @@ public abstract class Entity {
 	public Vector2f pos;
 	public Vector2f renderOffset;
 	public Vector2f colliderOffset;
-	private Optional<AbstractEvent> collisionEvent;
+	private Optional<CollisionEvent> collisionEvent;
 	
 	public Entity(RenderingPrimitive renderObject, CollisionObject collider,
 			float x, float y,
 			float renderOffsetX, float renderOffsetY,
-			float colliderOffsetX, float colliderOffsetY) {
+			float colliderOffsetX, float colliderOffsetY,
+			CollisionEvent event) {
 		this.renderObject = renderObject;
 		this.collider = collider;
 		this.pos = new Vector2f(x, y);
 		this.renderOffset = new Vector2f(renderOffsetX, renderOffsetY);
 		this.colliderOffset = new Vector2f(colliderOffsetX, colliderOffsetY);
+		this.collisionEvent = Optional.ofNullable(event);
+	}
+	
+	public Entity(RenderingPrimitive renderObject, CollisionObject collider,
+			float x, float y,
+			float renderOffsetX, float renderOffsetY,
+			float colliderOffsetX, float colliderOffsetY) {
+		this(renderObject, collider, x, y, renderOffsetX, renderOffsetY, colliderOffsetX, colliderOffsetY, null);
 	}
 	
 	public Entity(RenderingPrimitive renderObject, CollisionObject collider,
@@ -42,12 +50,22 @@ public abstract class Entity {
 	public boolean testCollision(Entity e) {
 		this.align();
 		e.align();
-		return this.collider.testCollision(e.collider);
+		boolean collision = this.collider.testCollision(e.collider);
+		if(collision && this.collisionEvent.isPresent()) {
+			this.collisionEvent.get().setCollider(e);
+			this.collisionEvent.get().invoke();
+		}
+		return collision;
 	}
 	
 	public boolean testCollision(CollisionObject c) {
 		this.align();
-		return this.collider.testCollision(c);
+		boolean collision = this.collider.testCollision(c);
+		if(collision && this.collisionEvent.isPresent()) {
+			this.collisionEvent.get().setCollider(c);
+			this.collisionEvent.get().invoke();
+		}
+		return collision;
 	}
 	
 	public final void align() {

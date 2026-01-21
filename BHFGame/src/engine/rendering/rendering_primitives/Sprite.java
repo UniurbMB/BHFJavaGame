@@ -10,7 +10,6 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
-import engine.ShaderProgram;
 import engine.Window;
 
 import static org.lwjgl.opengl.GL33.*;

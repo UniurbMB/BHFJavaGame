@@ -3,19 +3,13 @@ package engine.rendering.rendering_primitives;
 import static org.lwjgl.opengl.GL33.*;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
-
-import engine.ShaderProgram;
 
 public class Canvas extends Sprite{
 	
 	public Vector3f color;
-	//private int textureid;
 	private int frameBufferid;
 	
 	private int pixelWidth, pixelHeight;

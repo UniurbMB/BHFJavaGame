@@ -1,16 +1,15 @@
 package engine.events;
 
-import engine.collision.collision_shapes.CollisionObject;
-
 public abstract class CollisionEvent extends AbstractEvent {
 
-	private CollisionObject obj;
+	@SuppressWarnings("unused")
+	private Object collider;
+	
+	public void setCollider(Object c) {
+		this.collider = c;
+	}
 	
 	@Override
 	public abstract void invoke();
-	
-	public void setCollisionObject(CollisionObject obj) {
-		this.obj = obj;
-	}
 	
 }

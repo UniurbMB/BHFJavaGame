@@ -43,7 +43,7 @@ public class Main {
 	
 	private static void init() {
 		window = new Window(1967, 967, "Cool test", 60);
-		scene = new MenuScene();
+		scene = new SpriteBatchTestScene();
 		window.setCurrentScene(scene);
 	}
 	

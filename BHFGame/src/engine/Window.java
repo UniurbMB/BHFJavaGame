@@ -162,6 +162,10 @@ public class Window {
 		return this.delta;
 	}
 	
+	public float getFps() {
+		return 1.0f/this.delta;
+	}
+	
 	public int getDesiredFramerate() {
 		return this.desiredFramerate;
 	}

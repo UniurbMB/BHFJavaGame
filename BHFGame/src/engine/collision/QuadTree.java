@@ -1,11 +1,13 @@
 package engine.collision;
 
 import engine.collision.collision_shapes.CollisionRect;
-import engine.collision.collision_shapes.CollisionObject;
+import engine.rendering.rendering_primitives.Rect;
+import engine.Entity;
 
 import java.util.Optional;
 
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ public class QuadTree {
 		private int objectCount;
 		private int depth;
 		private CollisionRect bounds;
-		private List<CollisionObject> objects;
+		private List<Entity> objects;
 		private Optional<QuadTreeNode[]> children;
 		
 		private QuadTreeNode(CollisionRect bounds, QuadTree tree, int depth) {
@@ -33,15 +35,16 @@ public class QuadTree {
 			this(bounds, tree, 0);
 		}
 		
-		public boolean addObject(CollisionObject obj) {
+		public boolean addObject(Entity obj) {
 			boolean out = false;
-			this.objectCount++;
 			if(!this.objectBelongsToNode(obj))return out;
+			this.objectCount++;
 			out = true;
 			if(this.isLeaf()) {
 				
 				if(this.objectCount > this.tree.getMaxNodeSize()) {
 					this.extend();
+					this.objectCount--;
 					this.addObject(obj);
 				}else {
 					this.objects.add(obj);
@@ -54,9 +57,9 @@ public class QuadTree {
 			return true;
 		}
 		
-		public boolean testCollision(CollisionObject obj) {
+		public boolean testCollision(Entity obj) {
 			if(this.isLeaf()) {
-				for(CollisionObject v: this.objects) if(v.testCollision(obj)) return true;
+				for(Entity v: this.objects) if(v.testCollision(obj)) return true;
 				return false;
 			}else {
 				QuadTreeNode[] c = this.getChildrenToOperateOn(obj);
@@ -65,9 +68,9 @@ public class QuadTree {
 			}
 		}
 
-		public boolean testCollisionAgainstTarget(CollisionObject obj, CollisionObject target) {
+		public boolean testCollisionAgainstTarget(Entity obj, Entity target) {
 			if(this.isLeaf()) {
-				for(CollisionObject v: this.objects) if(v == target && v.testCollision(obj)) return true;
+				for(Entity v: this.objects) if(v == target && v.testCollision(obj)) return true;
 				return false;
 			}else {
 				QuadTreeNode[] c = this.getChildrenToOperateOn(obj);
@@ -76,7 +79,8 @@ public class QuadTree {
 			}
 		}
 		
-		public void removeObject(CollisionObject obj) {
+		public void removeObject(Entity obj) {
+			if(!this.objectBelongsToNode(obj))return;
 			this.objectCount--;
 			if(this.isLeaf()) {
 				this.objects.remove(obj);
@@ -94,8 +98,8 @@ public class QuadTree {
 		}
 		
 		private void extend() {
-			List<CollisionObject> l = new ArrayList<>();
-			for(CollisionObject v: this.objects)l.add(v);
+			List<Entity> l = new ArrayList<>();
+			for(Entity v: this.objects)l.add(v);
 			this.objects.clear();
 			this.children = Optional.of(new QuadTreeNode[4]);
 			for(int i = 0; i < 4; i++) {
@@ -105,7 +109,7 @@ public class QuadTree {
 				pos.y = this.bounds.pos.y + (this.bounds.size.y * ((i/2==0)?1.0f:-1.0f)) / 2.0f;
 				this.children.get()[i] = new QuadTreeNode(new CollisionRect(pos, size), this.tree, this.depth + 1);
 			}
-			for(CollisionObject v: l) {
+			for(Entity v: l) {
 				QuadTreeNode[] c = this.getChildrenToOperateOn(v);
 				for(QuadTreeNode n: c)n.addObject(v);
 			}
@@ -115,27 +119,30 @@ public class QuadTree {
 		private void shake() {
 			if(this.objectCount <= this.tree.getMaxNodeSize()) {
 				if(!this.isLeaf()) {
-					List<CollisionObject> arr = new ArrayList<>();
+					List<Entity> arr = new ArrayList<>();
 					QuadTreeNode[] c = this.children.get();
-					for(int i = 0; i < 4; i++) for(CollisionObject v: c[i].objects) if(!arr.contains(v)) arr.add(v);
+					for(int i = 0; i < 4; i++) for(Entity v: c[i].objects) if(!arr.contains(v)) arr.add(v);
 					this.objects = arr;
-					this.children = Optional.of(null);
+					this.children = Optional.empty();
 				}
 			}
 		}
 		
-		private boolean objectBelongsToNode(CollisionObject obj) {
-			return this.bounds.testCollision(obj);
+		private boolean objectBelongsToNode(Entity obj) {
+			//obj.align();
+			//return this.bounds.testCollision(obj.getCollider());
+			return obj.testCollision(this.bounds);
 		}
 		
-		private QuadTreeNode[] getChildrenToOperateOn(CollisionObject obj) {
+		private QuadTreeNode[] getChildrenToOperateOn(Entity obj) {
 			int childrenCount = 0;
+			obj.align();
 			for(QuadTreeNode v: this.children.get()) if(v.objectBelongsToNode(obj)) childrenCount++;
 			QuadTreeNode[] out = new QuadTreeNode[childrenCount];
-			System.out.println(childrenCount);
+			//System.out.println(childrenCount);
 			childrenCount = 0;
 			for(QuadTreeNode v: this.children.get()) if(v.objectBelongsToNode(obj)) {
-				System.out.println(childrenCount + " huh?");
+				//System.out.println(childrenCount + " huh?");
 				out[childrenCount] = v;
 				childrenCount++;
 			}
@@ -144,6 +151,31 @@ public class QuadTree {
 		
 		private boolean isLeaf() {
 			return this.children.isEmpty();
+		}
+		
+		public void render(int index) {
+			if(this.isLeaf()) {
+				Vector3f col;
+				if(index == 0)col = new Vector3f(1, 0, 0);
+				else if(index == 1)col = new Vector3f(0, 1, 0);
+				else if(index == 2)col = new Vector3f(0, 0, 1);
+				else col = new Vector3f(1, 1, 0);
+				Rect r = new Rect(this.bounds.pos, this.bounds.size, col);
+				r.render();
+			}else {
+				QuadTreeNode[] arr = this.children.get();
+				for(int i = 0; i < arr.length; i++) {
+					arr[i].render(i);
+				}
+			}
+		}
+		
+		public void printObjectCount() {
+			System.out.println("<" + this.depth + "> {" + this.objectCount + "}");
+			if(!this.isLeaf()) {
+				QuadTreeNode[] arr = this.children.get();
+				for(QuadTreeNode v: arr)v.printObjectCount();
+			}
 		}
 		
 	};
@@ -174,19 +206,19 @@ public class QuadTree {
 		this(maxTreeDepth, maxNodeSize, new CollisionRect(0, 0, 1, 1));
 	}
 	
-	public void addObject(CollisionObject obj) {
+	public void addObject(Entity obj) {
 		this.root.addObject(obj);
 	}
 	
-	public void removeObject(CollisionObject obj) {
+	public void removeObject(Entity obj) {
 		this.root.removeObject(obj);
 	}
 	
-	public boolean testCollision(CollisionObject obj) {
+	public boolean testCollision(Entity obj) {
 		return this.root.testCollision(obj);
 	}
 	
-	public boolean testCollisionAgainstTarget(CollisionObject obj, CollisionObject target) {
+	public boolean testCollisionAgainstTarget(Entity obj, Entity target) {
 		return this.root.testCollisionAgainstTarget(obj, target);
 	}
 	
@@ -200,6 +232,18 @@ public class QuadTree {
 	
 	public int getMaxNodeSize() {
 		return this.maxNodeSize;
+	}
+	
+	public int getObjectCount() {
+		return this.root.objectCount;
+	}
+	
+	public void printObjectCount() {
+		this.root.printObjectCount();
+	}
+	
+	public void render() {
+		this.root.render(0);
 	}
 	
 }

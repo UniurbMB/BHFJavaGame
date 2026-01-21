@@ -122,7 +122,7 @@ public class CollisionTestScene extends Scene {
 	
 	@Override
 	public void init() {
-		tree.addObject(e2.getCollider());
+		tree.addObject(e2);
 		//tree.addObject(e3.getCollider());
 	}
 	
@@ -136,11 +136,11 @@ public class CollisionTestScene extends Scene {
 		e2.update(delta);
 		e3.update(delta);
 		
-		tree.addObject(e1.getCollider());
+		tree.addObject(e1);
 		
-		if(tree.testCollision(e4.getCollider()))System.out.println("Collision!");
+		if(tree.testCollision(e4))System.out.println("Collision!");
 
-		tree.removeObject(e1.getCollider());
+		tree.removeObject(e1);
 	}
 
 }

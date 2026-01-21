@@ -21,7 +21,7 @@ public class Main {
 	
 	private static void init() {
 		window = new Window(1900, 967, "Bullet Heaven Monday", 60, false);
-		scene = new CollisionTestScene();
+		scene = new QuadTreeCollisionScene();
 		window.setCurrentScene(scene);
 	}
 	

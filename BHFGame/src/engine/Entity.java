@@ -45,6 +45,11 @@ public abstract class Entity {
 		return this.collider.testCollision(e.collider);
 	}
 	
+	public boolean testCollision(CollisionObject c) {
+		this.align();
+		return this.collider.testCollision(c);
+	}
+	
 	public final void align() {
 		this.collider.pos.x = this.pos.x + this.colliderOffset.x;
 		this.collider.pos.y = this.pos.y + this.colliderOffset.y;
@@ -54,12 +59,17 @@ public abstract class Entity {
 	
 	public final void render() {
 		if(this.visible) {
+			this.align();
 			this.renderObject.render();
 		}
 	}
 	
 	public final CollisionObject getCollider() {
 		return this.collider;
+	}
+	
+	public final RenderingPrimitive getRenderObject() {
+		return this.renderObject;
 	}
 
 }
